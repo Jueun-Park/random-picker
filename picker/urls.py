@@ -3,5 +3,5 @@ from picker import views
 
 urlpatterns = [
     path('', views.index),
-    path('pick/<lines>', views.pick),
+    path('pick/', views.pick),
 ]
