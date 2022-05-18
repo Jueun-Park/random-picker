@@ -1,32 +1,35 @@
-from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
+from rest_framework import viewsets
+from .serializers import PickRequestSerializers
 import random
 
 
+# TODO: how to delete global variable?
 pick_res = 'ready to pick'
+
 
 def picker_template(pick_result='ready to pick'):
     return f'''
     <h1>Random Picker</h1>
     <h2>{pick_result}</h2>
     <h3>separate by line break</h3>
-    <form action='/pick/' method='POST'>
+    <form action='/picker/' method='POST'>
         <p><textarea name='lines'></textarea></p>
         <p><input type='submit'></p>
     </form>
     '''
 
 
-def index(request):
-    global pick_res
-    return HttpResponse(picker_template(pick_res))
+class PickerView(viewsets.ViewSet):
+    serializer_class = PickRequestSerializers
 
+    def index(self, serializer):
+        global pick_res
+        return HttpResponse(picker_template(pick_res))
 
-@csrf_exempt
-def pick(request: HttpRequest):
-    global pick_res
-    lines_list = request.POST['lines'].split()
-    pick_res = random.choice(lines_list)
-    return redirect('/')
+    def pick(self, request: HttpRequest):
+        global pick_res
+        line_list = request.POST['lines'].split()
+        pick_res = random.choice(line_list)
+        return redirect('/picker/')
