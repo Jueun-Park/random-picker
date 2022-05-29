@@ -22,6 +22,6 @@ class PickerView(viewsets.ViewSet):
 
     def pick(self, request: HttpRequest):
         global pick_res
-        line_list = request.POST['lines'].split()
+        line_list = request.POST['lines'].split('\n')
         pick_res = random.choice(line_list)
         return redirect('random_picker_index')
